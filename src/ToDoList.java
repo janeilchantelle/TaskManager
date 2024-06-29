@@ -1,14 +1,4 @@
 public class ToDoList {
-    private class Node {
-        ToDo todo;
-        Node next;
-
-        Node(ToDo todo) {
-            this.todo = todo;
-            this.next = null;
-        }
-    }
-
     private Node head;
 
     public ToDoList() {
@@ -46,6 +36,16 @@ public class ToDoList {
         while (current != null) {
             System.out.println(current.todo);
             current = current.next;
+        }
+    }
+
+    private class Node {
+        ToDo todo;
+        Node next;
+
+        Node(ToDo todo) {
+            this.todo = todo;
+            this.next = null;
         }
     }
 }

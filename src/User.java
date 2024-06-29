@@ -20,7 +20,6 @@ public class User {
     }
 
     public void printToDos() {
-        System.out.println("Tasks for " + name + ":");
         toDoList.printToDos();
     }
 }

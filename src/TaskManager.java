@@ -6,65 +6,85 @@ public class TaskManager {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        printMenuHeader();
 
         while (true) {
-            printMenuHeader();
-
-            System.out.println("\u001B[35m1. Create username\u001B[0m");  // Pink text
-            System.out.println("\u001B[34m2. Add task to username\u001B[0m");  // Blue text
-            System.out.println("\u001B[36m3. Mark task as done\u001B[0m");  // Cyan text
-            System.out.println("\u001B[35m4. View tasks for user\u001B[0m");  // Pink text
-            System.out.println("\u001B[34m5. Exit\u001B[0m");  // Blue text
-
-            int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline after nextInt()
+            System.out.println("\u001B[35m1. Create username\u001B[0m");
+            System.out.println("\u001B[34m2. Add task to username\u001B[0m");
+            System.out.println("\u001B[36m3. Mark task as done\u001B[0m");
+            System.out.println("\u001B[35m4. View tasks for user\u001B[0m");
+            System.out.println("\u001B[34m5. Exit\u001B[0m");
+            int choice = getValidChoice(scanner);
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter username: ");
-                    String userName = scanner.nextLine();
-                    users.add(new User(userName));  // Create a new User object
+                    createUser(scanner);
                     break;
                 case 2:
-                    System.out.print("Enter username: ");
-                    userName = scanner.nextLine();
-                    User user = findUserByName(userName);
-                    if (user != null) {
-                        System.out.print("Enter task description: ");
-                        String description = scanner.nextLine();
-                        user.addToDo(description);  // Add a task to the user's list
-                    } else {
-                        System.out.println("User not found.");
-                    }
+                    addTaskToUser(scanner);
                     break;
                 case 3:
-                    System.out.print("Enter username: ");
-                    userName = scanner.nextLine();
-                    user = findUserByName(userName);
-                    if (user != null) {
-                        System.out.print("Enter task description to mark as done: ");
-                        String description = scanner.nextLine();
-                        user.markToDoAsDone(description);  // Mark a task as done for the user
-                    } else {
-                        System.out.println("User not found.");
-                    }
+                    markTaskAsDone(scanner);
                     break;
                 case 4:
-                    System.out.print("Enter username: ");
-                    userName = scanner.nextLine();
-                    user = findUserByName(userName);
-                    if (user != null) {
-                        user.printToDos();  // Print all tasks for the user
-                    } else {
-                        System.out.println("User not found.");
-                    }
+                    viewTasksForUser(scanner);
                     break;
                 case 5:
+                    System.out.println("Thank you for using Task Master. Have a productive day! :)");
                     scanner.close();
-                    return;  // Exit the program
+                    System.exit(0);
                 default:
                     System.out.println("Invalid choice. Please try again :)");
             }
+        }
+    }
+
+    private static void createUser(Scanner scanner) {
+        System.out.print("Enter username: ");
+        String userName = scanner.nextLine();
+        users.add(new User(userName));
+        System.out.println("Hello " + userName + "! Let's get a task list started!");
+    }
+
+    private static void addTaskToUser(Scanner scanner) {
+        System.out.print("Enter username: ");
+        String userName = scanner.nextLine();
+        User user = findUserByName(userName);
+        if (user != null) {
+            System.out.print("What task would you like to complete today? ");
+            String description = scanner.nextLine();
+            user.addToDo(description);
+            System.out.println("Task '" + description + "' added for " + userName + ".");
+        } else {
+            System.out.println("User not found.");
+        }
+    }
+
+    private static void markTaskAsDone(Scanner scanner) {
+        System.out.print("Enter username: ");
+        String userName = scanner.nextLine();
+        User user = findUserByName(userName);
+        if (user != null) {
+            System.out.println("Tasks for " + userName + ":");
+            user.printToDos();
+            System.out.print("Enter task description to mark as done: ");
+            String description = scanner.nextLine();
+            user.markToDoAsDone(description);
+            System.out.println("Task '" + description + "' marked as done for " + userName + ".");
+        } else {
+            System.out.println("User not found.");
+        }
+    }
+
+    private static void viewTasksForUser(Scanner scanner) {
+        System.out.print("Enter username: ");
+        String userName = scanner.nextLine();
+        User user = findUserByName(userName);
+        if (user != null) {
+            System.out.println("Tasks for " + userName + ":");
+            user.printToDos();
+        } else {
+            System.out.println("User not found.");
         }
     }
 
@@ -74,7 +94,7 @@ public class TaskManager {
                 return user;
             }
         }
-        return null;  // User not found
+        return null;
     }
 
     private static void printMenuHeader() {
@@ -89,5 +109,24 @@ public class TaskManager {
         System.out.println("\u001B[35m*************************************************************************\u001B[0m");
         System.out.println();
     }
-}
 
+    private static int getValidChoice(Scanner scanner) {
+        int choice;
+        while (true) {
+            System.out.print("Enter your choice: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= 1 && choice <= 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                }
+            } else {
+                scanner.nextLine();
+                System.out.println("Invalid choice. Please enter a number.");
+            }
+        }
+        return choice;
+    }
+}
